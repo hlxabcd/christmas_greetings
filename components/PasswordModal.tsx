@@ -109,7 +109,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({ onSuccess, onClose }) => 
           </form>
 
           <p className="mt-4 text-xs text-gray-500">
-            提示：密码是老登的年龄 🎂
+            提示：V大黄50告诉你密码，童叟无欺~ ✉️
           </p>
         </div>
 

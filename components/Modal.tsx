@@ -26,6 +26,10 @@ const Modal: React.FC<ModalProps> = ({ data, onClose, isGolden = false }) => {
 
   // Danmu State
   const [activeDanmus, setActiveDanmus] = useState<DanmuItem[]>([]);
+  
+  // Ref for the last visible line to auto-scroll to it
+  const lastLineRef = useRef<HTMLParagraphElement | null>(null);
+  const modalContentRef = useRef<HTMLDivElement | null>(null);
 
   const isWishData = (d: any): d is WishData => 'name' in d;
   const isBirthday = isWishData(data) && data.isSpecial;
@@ -36,6 +40,17 @@ const Modal: React.FC<ModalProps> = ({ data, onClose, isGolden = false }) => {
     setVisibleLineCount(0);
     setActiveDanmus([]);
   }, [data]);
+
+  // Auto-scroll to the latest line when visibleLineCount changes
+  useEffect(() => {
+    if (visibleLineCount > 0 && lastLineRef.current) {
+      // Use smooth scroll to the latest line
+      lastLineRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center', // Center the line in view
+      });
+    }
+  }, [visibleLineCount]);
 
   // Check for Danmu trigger when line count changes
   useEffect(() => {
@@ -194,9 +209,13 @@ const Modal: React.FC<ModalProps> = ({ data, onClose, isGolden = false }) => {
                   {data.message.map((para, idx) => {
                       if (idx >= visibleLineCount) return null;
 
+                      // Check if this is the last visible line
+                      const isLastLine = idx === visibleLineCount - 1;
+
                       return (
                           <p 
-                            key={idx} 
+                            key={idx}
+                            ref={isLastLine ? lastLineRef : null}
                             className={`
                               animate-fade-in
                               ${isGolden ? "text-center font-medium" : ""}
