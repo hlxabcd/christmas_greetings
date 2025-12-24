@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
-      base: './', // 使用相对路径，适合 GitHub Pages
+      base: '/christmas_greetings/', // GitHub Pages 仓库路径
       server: {
         port: 3000,
         host: '0.0.0.0',
