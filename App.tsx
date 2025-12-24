@@ -11,7 +11,8 @@ import { WishData, GoldenWishData } from './types';
 // Updated music URLs
 const MUSIC_URLS = {
   // Jingle Bells (Kevin MacLeod) - Creative Commons
-  christmas: "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Jingle%20Bells.mp3", 
+  //christmas: "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Jingle%20Bells.mp3", 
+  christmas: "https://cdn.pixabay.com/download/audio/2025/06/13/audio_d5fa62b5af.mp3?filename=jingle-bells-348411.mp3", 
   birthday: "https://cdn.pixabay.com/download/audio/2023/06/26/audio_cd13a5db91.mp3?filename=happy-birthday-155461.mp3"
 };
 
