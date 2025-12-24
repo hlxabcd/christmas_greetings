@@ -4,6 +4,7 @@ import Snowfall from './components/Snowfall';
 import GiftBox from './components/GiftBox';
 import Modal from './components/Modal';
 import GoldenBox from './components/GoldenBox';
+import PasswordModal from './components/PasswordModal';
 import { WISHES, GOLDEN_WISH } from './constants';
 import { WishData, GoldenWishData } from './types';
 
@@ -21,6 +22,8 @@ const App: React.FC = () => {
   const [activeModal, setActiveModal] = useState<WishData | GoldenWishData | null>(null);
   const [isGoldenModal, setIsGoldenModal] = useState(false);
   const [showGoldenBox, setShowGoldenBox] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [isPasswordVerified, setIsPasswordVerified] = useState(false);
   
   // Music State
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
@@ -181,8 +184,25 @@ const App: React.FC = () => {
   };
 
   const handleGoldenClick = () => {
+    if (isPasswordVerified) {
+      // Password already verified, show content directly
+      setActiveModal(GOLDEN_WISH);
+      setIsGoldenModal(true);
+    } else {
+      // Show password modal first
+      setShowPasswordModal(true);
+    }
+  };
+
+  const handlePasswordSuccess = () => {
+    setIsPasswordVerified(true);
+    setShowPasswordModal(false);
     setActiveModal(GOLDEN_WISH);
     setIsGoldenModal(true);
+  };
+
+  const handlePasswordClose = () => {
+    setShowPasswordModal(false);
   };
 
   const handleCloseModal = () => {
@@ -243,6 +263,14 @@ const App: React.FC = () => {
       <footer className="relative z-10 mt-20 text-center text-white/40 text-sm pb-8">
         <p>Made with ❤️ for my best friends</p>
       </footer>
+
+      {/* Password Modal */}
+      {showPasswordModal && (
+        <PasswordModal
+          onSuccess={handlePasswordSuccess}
+          onClose={handlePasswordClose}
+        />
+      )}
 
       {/* Modal */}
       {activeModal && (
