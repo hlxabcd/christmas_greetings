@@ -23,7 +23,8 @@ const App: React.FC = () => {
   const [isGoldenModal, setIsGoldenModal] = useState(false);
   const [showGoldenBox, setShowGoldenBox] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [isPasswordVerified, setIsPasswordVerified] = useState(false);
+  const [pendingBirthdayWish, setPendingBirthdayWish] = useState<WishData | null>(null);
+  const [isBirthdayUnlocked, setIsBirthdayUnlocked] = useState(false);
   
   // Music State
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
@@ -173,6 +174,15 @@ const App: React.FC = () => {
   }, [openedBoxIds]);
 
   const handleBoxClick = (wish: WishData) => {
+    // 检查是否是第8个礼物盒（李博的生日宝箱）
+    if (wish.id === 8 && wish.isSpecial && !isBirthdayUnlocked) {
+      // 显示密码弹窗
+      setPendingBirthdayWish(wish);
+      setShowPasswordModal(true);
+      return;
+    }
+    
+    // 其他礼物盒正常打开
     setActiveModal(wish);
     setIsGoldenModal(false);
     
@@ -183,26 +193,31 @@ const App: React.FC = () => {
     }
   };
 
-  const handleGoldenClick = () => {
-    if (isPasswordVerified) {
-      // Password already verified, show content directly
-      setActiveModal(GOLDEN_WISH);
-      setIsGoldenModal(true);
-    } else {
-      // Show password modal first
-      setShowPasswordModal(true);
-    }
-  };
-
   const handlePasswordSuccess = () => {
-    setIsPasswordVerified(true);
     setShowPasswordModal(false);
-    setActiveModal(GOLDEN_WISH);
-    setIsGoldenModal(true);
+    setIsBirthdayUnlocked(true);
+    
+    if (pendingBirthdayWish) {
+      setActiveModal(pendingBirthdayWish);
+      setIsGoldenModal(false);
+      
+      // Mark as opened
+      if (!openedBoxIds.includes(pendingBirthdayWish.id)) {
+        const newOpened = [...openedBoxIds, pendingBirthdayWish.id];
+        setOpenedBoxIds(newOpened);
+      }
+      setPendingBirthdayWish(null);
+    }
   };
 
   const handlePasswordClose = () => {
     setShowPasswordModal(false);
+    setPendingBirthdayWish(null);
+  };
+
+  const handleGoldenClick = () => {
+    setActiveModal(GOLDEN_WISH);
+    setIsGoldenModal(true);
   };
 
   const handleCloseModal = () => {
@@ -264,7 +279,7 @@ const App: React.FC = () => {
         <p>Made with ❤️ for my best friends</p>
       </footer>
 
-      {/* Password Modal */}
+      {/* Password Modal for Birthday Box */}
       {showPasswordModal && (
         <PasswordModal
           onSuccess={handlePasswordSuccess}
